@@ -7,31 +7,29 @@ workflows:
           - godot
         vars:
           GODOT_VERSION: 4.3
-          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_osx.universal.zip
           GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-          GODOT_EXEC: Godot_v${GODOT_VERSION}-stable_x11.64
+          GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
+          GODOT_EXEC: Godot.app/Contents/MacOS/Godot
           EXPORT_TYPE: android
-          ARTIFACT: android_build.apk
+          ARTIFACT: android.apk
+          ANDROID_BUILD_DIR: android_build/
           ANDROID_SDK_PATH: /path/to/android-sdk
           ANDROID_NDK_PATH: /path/to/android-ndk
       scripts:
         - name: Download Godot engine
-          script: |
-            # Baixar o Godot (versão 4.3)
-            mkdir -p /godot
-            wget -O /godot/godot.zip https://downloads.tuxfamily.org/godotengine/4.3/godot-4.3-stable-linux-x86_64.zip
-            unzip /godot/godot.zip -d /godot
-            chmod +x /godot/godot.x86_64
+          script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
+        - name: Download Godot templates
+          script: curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
+        - name: Setup templates
+          script: mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
+        - name: Prepare build directory
+          script: mkdir -p ${ANDROID_BUILD_DIR}
+        - name: Decode export presets
+          script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
+        - name: Setup Android SDK and NDK
+          script: export ANDROID_SDK_ROOT=${ANDROID_SDK_PATH} && export ANDROID_NDK_ROOT=${ANDROID_NDK_PATH}
         - name: Export project
-          script: |
-            # Navegar para o diretório do projeto Godot
-            cd $CM_BUILD_DIR
-            
-            # Configurar o export template se necessário
-            wget https://downloads.tuxfamily.org/godotengine/4.3/godot-4.3-android-export.zip
-            unzip godot-4.3-android-export.zip -d ~/.local/share/godot/templates
-
-            # Gerar o APK
-            /godot/godot.x86_64 --export "Android" --no-window "project.godot" "builds/android_project.apk"
+          script: ${GODOT_EXEC} --path . --no-window --export "${EXPORT_TYPE}" ${ANDROID_BUILD_DIR}/${ARTIFACT}
       artifacts:
-        - build/*.apk
+        - ${ANDROID_BUILD_DIR}/*.apk
