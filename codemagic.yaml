@@ -6,13 +6,13 @@ workflows:
       groups:
         - godot
       vars:
-        GODOT_VERSION: 4.3
+        GODOT_VERSION: 4.3.0
         GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
         GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
         GODOT_TEMPLATES_DIR: "$HOME/godot/templates/${GODOT_VERSION}.stable"
         GODOT_EXEC: Godot_v${GODOT_VERSION}-stable_linux.x86_64
         EXPORT_PRESETS: "export_presets.cfg"
-        EXPORT_TYPE: "android"
+        EXPORT_TYPE: "Android"
         ARTIFACT: build/app.apk
     scripts:
       - name: Download and Setup Godot
@@ -23,6 +23,9 @@ workflows:
           curl -o godot-templates.tpz ${GODOT_TEMPLATES_URL}
           unzip godot-templates.tpz -d $HOME/godot/templates
           chmod +x $HOME/godot/${GODOT_EXEC}
+      - name: Check File Type
+        script: |
+          file $HOME/godot/${GODOT_EXEC}
       - name: Prepare Export Presets
         script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > $HOME/godot/${EXPORT_PRESETS}
       - name: Export Project
