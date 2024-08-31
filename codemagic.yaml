@@ -10,7 +10,7 @@ workflows:
         GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_macos.universal.zip
         GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
         GODOT_TEMPLATES_DIR: "$PWD/godot/templates/${GODOT_VERSION}.stable"
-        GODOT_EXEC: Godot.app/Contents/MacOS/Godot
+        GODOT_EXEC: Godot.app/Contents/Android/Godot
         EXPORT_TYPE: "android"
         ARTIFACT: app.apk
     scripts:
