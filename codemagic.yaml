@@ -26,6 +26,6 @@ workflows:
         - name: Decode export presets
           script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
         - name: Export project
-          script: godot --path . --no-window --export "${EXPORT_TYPE}" build/${ARTIFACT}
+          script: ${GODOT_EXEC} --path . --no-window --export "${EXPORT_TYPE}" build/${ARTIFACT}
       artifacts:
         - build/*.apk
