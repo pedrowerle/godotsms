@@ -15,21 +15,17 @@ workflows:
         EXPORT_TYPE: "Android"
         ARTIFACT: build/app.apk
     scripts:
-      - name: Download and Setup Godot
-        script: |
-          mkdir -p $HOME/godot
-          curl -o godot.zip ${GODOT_EXEC_URL}
-          unzip godot.zip -d $HOME/godot
-          curl -o godot-templates.tpz ${GODOT_TEMPLATES_URL}
-          unzip godot-templates.tpz -d $HOME/godot/templates
-          chmod +x $HOME/godot/${GODOT_EXEC}
-      - name: Check File Type
-        script: |
-          file $HOME/godot/${GODOT_EXEC}
-      - name: Prepare Export Presets
-        script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > $HOME/godot/${EXPORT_PRESETS}
-      - name: Export Project
-        script: |
-          $HOME/godot/${GODOT_EXEC} --headless --export-debug "${EXPORT_TYPE}" $HOME/${ARTIFACT}
+        - name: Download Godot engine
+          script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
+        - name: Download Godot templates
+          script: curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
+        - name: Setup templates
+          script: mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
+        - name: Prepare build directory
+          script: mkdir build/
+        - name: Decode export presets
+          script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
+        - name: Export project
+          script: ${GODOT_EXEC} --path . --no-window --export "${EXPORT_TYPE}" build/${ARTIFACT}
     artifacts:
-      - build/*.apk
+        - build/*.zip
