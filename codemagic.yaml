@@ -12,7 +12,7 @@ workflows:
         GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
         GODOT_EXEC: Godot.app/Contents/MacOS/Godot
         EXPORT_PRESETS: "export_presets.cfg"
-        EXPORT_TYPE: "Android"
+        EXPORT_TYPE: "android"
         ARTIFACT: build/app.apk
     scripts:
         - name: Download Godot engine
