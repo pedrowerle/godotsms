@@ -7,7 +7,7 @@ workflows:
           - godot
         vars:
           GODOT_VERSION: 4.3
-          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_osx.universal.zip
+          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_macos.universal.zip
           GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
           GODOT_EXEC: Godot.app/Contents/MacOS/Godot
@@ -15,7 +15,7 @@ workflows:
           ARTIFACT: app.zip
       scripts:
         - name: Download Godot engine
-          script: curl -o ./godot ${GODOT_EXEC_URL} && unzip ./godot
+          script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
         - name: Download Godot templates
           script: curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
         - name: Setup templates
