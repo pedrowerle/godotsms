@@ -13,7 +13,7 @@ workflows:
         GODOT_EXEC: Godot_v${GODOT_VERSION}-stable_linux.x86_64/Godot
         EXPORT_TYPE: "Android"
         ARTIFACT: app.apk
-     scripts:
+    scripts:
         - name: Download Godot engine
           script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
         - name: Download Godot templates
