@@ -1,30 +1,32 @@
 workflows:
-  godot-android-workflow:
-    name: Godot Android Workflow
+  android-build:
+    name: Android Build Workflow
     max_build_duration: 60
     environment:
       groups:
         - godot
       vars:
         GODOT_VERSION: 4.3
-        GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_macos.universal.zip
+        GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
         GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-        GODOT_TEMPLATES_DIR: "$PWD/godot/templates/${GODOT_VERSION}.stable"
-        GODOT_EXEC: Godot.app/Contents/Android/Godot
+        GODOT_TEMPLATES_DIR: "$HOME/godot/templates/${GODOT_VERSION}.stable"
+        GODOT_EXEC: Godot_v${GODOT_VERSION}-stable_linux.x86_64
+        EXPORT_PRESETS: "export_presets.cfg"
         EXPORT_TYPE: "android"
-        ARTIFACT: app.apk
+        ARTIFACT: build/app.apk
     scripts:
-      - name: Download Godot engine
-        script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
-      - name: Download Godot templates
-        script: curl -o ./godot-templates.tpz ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.tpz -d ./templates
-      - name: Setup templates
-        script: mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates/* "${GODOT_TEMPLATES_DIR}/"
-      - name: Prepare build directory
-        script: mkdir build/
-      - name: Decode export presets
-        script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
-      - name: Export project
-        script: ${GODOT_EXEC} --path . --no-window --export-release "${EXPORT_TYPE}" build/${ARTIFACT}
+      - name: Download and Setup Godot
+        script: |
+          mkdir -p $HOME/godot
+          curl -o godot.zip ${GODOT_EXEC_URL}
+          unzip godot.zip -d $HOME/godot
+          curl -o godot-templates.tpz ${GODOT_TEMPLATES_URL}
+          unzip godot-templates.tpz -d $HOME/godot/templates
+          chmod +x $HOME/godot/${GODOT_EXEC}
+      - name: Prepare Export Presets
+        script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > $HOME/godot/${EXPORT_PRESETS}
+      - name: Export Project
+        script: |
+          $HOME/godot/${GODOT_EXEC} --headless --export-debug "${EXPORT_TYPE}" $HOME/${ARTIFACT}
     artifacts:
       - build/*.apk
