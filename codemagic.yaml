@@ -9,8 +9,8 @@ workflows:
         GODOT_VERSION: 4.3
         GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
         GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-        GODOT_TEMPLATES_DIR: "$HOME/godot/templates/${GODOT_VERSION}.stable"
-        GODOT_EXEC: Godot_v${GODOT_VERSION}-stable_linux.x86_64
+        GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
+        GODOT_EXEC: Godot.app/Contents/MacOS/Godot
         EXPORT_PRESETS: "export_presets.cfg"
         EXPORT_TYPE: "Android"
         ARTIFACT: build/app.apk
@@ -26,6 +26,6 @@ workflows:
         - name: Decode export presets
           script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
         - name: Export project
-          script: ${GODOT_EXEC} --path . --no-window --export "${EXPORT_TYPE}" build/${ARTIFACT}
+          script: godot --path . --no-window --export "${EXPORT_TYPE}" build/${ARTIFACT}
     artifacts:
         - build/*.zip
