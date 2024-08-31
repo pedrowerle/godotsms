@@ -20,6 +20,8 @@ workflows:
           script: curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
         - name: Setup templates
           script: mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
+        - name: Setup SDK and NDK
+          script: export PATH=${ANDROID_SDK_PATH}/tools:${ANDROID_SDK_PATH}/platform-tools:${ANDROID_NDK_PATH}/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
         - name: Prepare build directory
           script: mkdir build/
         - name: Decode export presets
