@@ -15,7 +15,7 @@ workflows:
           ARTIFACT: app.zip
       scripts:
         - name: Download Godot engine
-          script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
+          script: curl -o ./godot ${GODOT_EXEC_URL} && unzip ./godot
         - name: Download Godot templates
           script: curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
         - name: Setup templates
