@@ -1,6 +1,6 @@
 workflows:
   godot-android-workflow:
-	name: godot android workflow
+	name: Godot Android Workflow
 	max_build_duration: 60
 	environment:
 	  groups:
