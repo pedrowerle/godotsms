@@ -1,21 +1,18 @@
 workflows:
-  godot-android-workflow:
-      name: Godot Android Workflow
+  godot-mac-workflow:
+      name: Godot Mac Workflow
       max_build_duration: 60
       environment:
         groups:
           - godot
         vars:
           GODOT_VERSION: 4.3
-          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_osx.universal.zip
+          GODOT_EXEC_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_macos.universal.zip
           GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
           GODOT_EXEC: Godot.app/Contents/MacOS/Godot
-          EXPORT_TYPE: android
-          ARTIFACT: android.apk
-          ANDROID_BUILD_DIR: android_build/
-          ANDROID_SDK_PATH: /path/to/android-sdk
-          ANDROID_NDK_PATH: /path/to/android-ndk
+          EXPORT_TYPE: mac
+          ARTIFACT: app.zip
       scripts:
         - name: Download Godot engine
           script: curl -o ./godot.zip ${GODOT_EXEC_URL} && unzip ./godot.zip
@@ -24,12 +21,10 @@ workflows:
         - name: Setup templates
           script: mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
         - name: Prepare build directory
-          script: mkdir -p ${ANDROID_BUILD_DIR}
+          script: mkdir build/
         - name: Decode export presets
           script: echo ${GODOT_EXPORT_PRESETS} | base64 --decode > ./export_presets.cfg
-        - name: Setup Android SDK and NDK
-          script: export ANDROID_SDK_ROOT=${ANDROID_SDK_PATH} && export ANDROID_NDK_ROOT=${ANDROID_NDK_PATH}
         - name: Export project
-          script: ${GODOT_EXEC} --path . --no-window --export "${EXPORT_TYPE}" ${ANDROID_BUILD_DIR}/${ARTIFACT}
+          script: ${GODOT_EXEC} --path . --no-window --export-debug "${EXPORT_TYPE}" build/${ARTIFACT}
       artifacts:
-        - ${ANDROID_BUILD_DIR}/*.apk
+        - build/*.zip
